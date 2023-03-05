@@ -87,7 +87,7 @@
         </dependency>
 
 
-        <dependency>
+<!--         <dependency>
 
             <groupId>info.cukes</groupId>
 
@@ -97,7 +97,7 @@
 
             <scope>test</scope>
 
-        </dependency>
+        </dependency> -->
 
         <!-- https://mvnrepository.com/artifact/info.cukes/cucumber-core -->
 
