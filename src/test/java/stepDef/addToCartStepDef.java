@@ -27,10 +27,13 @@ public class addToCartStepDef {
 
         if (osName.contains("windows")){
             System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/windows/chromedriver.exe");
+            System.out.println("windows");
         }else if (osName.contains("mac")){
             System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/macOS/chromedriver");
+            System.out.println("mac");
         } else if (osName.contains("linux")) {
             System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/linux/chromedriver");
+            System.out.println("LINUX");
         }
 
         ChromeDriverService service= new ChromeDriverService.Builder()
