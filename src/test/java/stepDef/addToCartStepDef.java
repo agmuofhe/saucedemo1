@@ -40,8 +40,8 @@ public class addToCartStepDef {
         ChromeOptions options= new ChromeOptions();
         options.addArguments("--disable-blink-features");
         options.addArguments("--disable-blink-features=AutomationControlled");
-//        options.addArguments("--headless");
-//        options.addArguments("--disable-gpu");
+        options.addArguments("--headless");
+        options.addArguments("--disable-gpu");
         options.addArguments("--disable-extensions");
         options.addArguments("--incognito");
         options.addArguments("--disable-plugins-discovery");
