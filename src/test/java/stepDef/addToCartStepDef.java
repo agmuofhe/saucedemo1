@@ -1,9 +1,7 @@
 package stepDef;
 
 import io.cucumber.java.After;
-import io.cucumber.java.AfterAll;
 import io.cucumber.java.Before;
-import io.cucumber.java.BeforeAll;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -14,7 +12,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.Select;
 
 
 
@@ -23,11 +20,18 @@ public class addToCartStepDef {
 
     @Before
     public void setup(){
-        System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/chromedriver.exe");
+        String osName=System.getProperty("os.name").toLowerCase();
+
+        if (osName.contains("windows")){
+            System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/windows/chromedriver.exe");
+        }else if (osName.contains("mac")){
+            System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/macOS/chromedriver");
+        } else if (osName.contains("linux")) {
+            System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/linux/chromedriver");
+        }
+
         driver = new ChromeDriver();
-
         driver.get("https://www.saucedemo.com/");
-
         driver.manage().window().maximize();
 
     }
