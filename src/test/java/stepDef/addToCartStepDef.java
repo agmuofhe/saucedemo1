@@ -12,7 +12,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.io.File;
 
 
 public class addToCartStepDef {
@@ -30,7 +33,20 @@ public class addToCartStepDef {
             System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/linux/chromedriver");
         }
 
-        driver = new ChromeDriver();
+        ChromeDriverService service= new ChromeDriverService.Builder()
+                .usingDriverExecutable(new File(System.getProperty("webdriver.chrome.driver")))
+                .usingAnyFreePort()
+                .build();
+        ChromeOptions options= new ChromeOptions();
+        options.addArguments("--disable-blink-features");
+        options.addArguments("--disable-blink-features=AutomationControlled");
+//        options.addArguments("--headless");
+//        options.addArguments("--disable-gpu");
+        options.addArguments("--disable-extensions");
+        options.addArguments("--incognito");
+        options.addArguments("--disable-plugins-discovery");
+        options.addArguments("--remote-allow-origins=*");
+        driver = new ChromeDriver(service,options);
         driver.get("https://www.saucedemo.com/");
         driver.manage().window().maximize();
 
