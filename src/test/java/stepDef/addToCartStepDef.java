@@ -23,6 +23,7 @@ public class addToCartStepDef {
 
     @Before
     public void setup(){
+        ChromeOptions options= new ChromeOptions();
         String osName=System.getProperty("os.name").toLowerCase();
 
         if (osName.contains("windows")){
@@ -41,7 +42,7 @@ public class addToCartStepDef {
                 .usingDriverExecutable(new File(System.getProperty("webdriver.chrome.driver")))
                 .usingAnyFreePort()
                 .build();
-        ChromeOptions options= new ChromeOptions();
+        
         options.addArguments("--disable-blink-features");
         options.addArguments("--disable-blink-features=AutomationControlled");
         options.addArguments("--headless");
