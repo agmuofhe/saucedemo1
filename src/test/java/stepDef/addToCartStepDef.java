@@ -43,13 +43,13 @@ public class addToCartStepDef {
                 .usingAnyFreePort()
                 .build();
         
-        options.addArguments("--disable-blink-features");
-        options.addArguments("--disable-blink-features=AutomationControlled");
+//         options.addArguments("--disable-blink-features");
+//         options.addArguments("--disable-blink-features=AutomationControlled");
         options.addArguments("--headless");
         options.addArguments("--disable-gpu");
-        options.addArguments("--disable-extensions");
-        options.addArguments("--incognito");
-        options.addArguments("--disable-plugins-discovery");
+//         options.addArguments("--disable-extensions");
+//         options.addArguments("--incognito");
+//         options.addArguments("--disable-plugins-discovery");
         options.addArguments("--remote-allow-origins=*");
         driver = new ChromeDriver(service,options);
         driver.get("https://www.saucedemo.com/");
