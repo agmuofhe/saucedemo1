@@ -33,9 +33,7 @@ public class addToCartStepDef {
             System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/macOS/chromedriver");
             System.out.println("mac");
         } else if (osName.contains("linux")) {
-            System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/windows/chromedriver.exe");
-
-//             System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/linux/chromedriver");
+            System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/linux/");
             options.setPlatformName("Linux");
             System.out.println("Linux");
         }
