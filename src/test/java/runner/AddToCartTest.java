@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         features = "src/test/java/FeatureFile/addToCart.feature",
         glue = {"stepDef"},
-        plugin = {"pretty", "html:target/report.json"}
+        plugin = {"pretty", "html:target/cucumber", "json:target/cucumber.jsom"}
 )
 
 public class AddToCartTest {
