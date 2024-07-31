@@ -2,6 +2,7 @@ package runner;
 
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
@@ -9,6 +10,7 @@ import org.junit.runner.RunWith;
         features = "src/test/java/FeatureFile/addToCart.feature",
         glue = {"stepDef"},
         plugin = {"pretty", "html:target/report.html"}
+//        {"pretty", "html:target/report.html", "json:target/report.json"}
 )
 
 public class AddToCartTest {
