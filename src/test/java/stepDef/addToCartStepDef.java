@@ -16,6 +16,8 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import io.github.bonigarcia.wdm.WebDriverManager;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -50,34 +52,17 @@ public class addToCartStepDef {
     @Before
     public void setup(){
         ChromeOptions options= new ChromeOptions();
-        String osName=System.getProperty("os.name").toLowerCase();
 
-        if (osName.contains("windows")){
-            System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/windows/chromedriver.exe");
-            System.out.println("windows");
-        }else if (osName.contains("mac")){
-            System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/macOS/chromedriver");
-            System.out.println("mac");
-        } else if (osName.contains("linux")) {
-            System.setProperty("webdriver.chrome.driver",System.getProperty("chromePath"));
-            System.out.println("Linux");
-        }
+        WebDriverManager.chromedriver().setup();
 
-        ChromeDriverService service= new ChromeDriverService
-                .Builder()
-                .usingDriverExecutable(new File(System.getProperty("webdriver.chrome.driver")))
-                .usingAnyFreePort()
-                .build();
-        
-//         options.addArguments("--disable-blink-features");
-//         options.addArguments("--disable-blink-features=AutomationControlled");
-//        options.addArguments("--headless");
-//        options.addArguments("--disable-gpu");
-//         options.addArguments("--disable-extensions");
-//         options.addArguments("--incognito");
+        options.addArguments("--headless");
+        options.addArguments("--incognito");
+        options.addArguments("--disable-gpu");
+        options.addArguments("--disable-plugins-discovery");
+        options.addArguments("--remote-allow-origins=*");
          options.addArguments("--disable-plugins-discovery");
         options.addArguments("--remote-allow-origins=*");
-        driver = new ChromeDriver(service,options);
+        driver = new ChromeDriver(options);
         driver.get("https://www.saucedemo.com/");
         driver.manage().window().maximize();
 
@@ -97,7 +82,6 @@ public class addToCartStepDef {
 
         //Enter Username
         driver.findElement(By.id("user-name")).sendKeys("standard_user");
-
 
         //Enter Password
         driver.findElement(By.id("password")).sendKeys("secret_sauce");
@@ -239,18 +223,6 @@ public class addToCartStepDef {
         alert.accept();
         alert.dismiss();
         alert.sendKeys("HEllo");
-//
-//        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-//        WebDriverWait waiit = new WebDriverWait(driver,Duration.ofSeconds(30));
-//        waiit.until(ExpectedConditions.elementToBeClickable(By.id("ID")));
-//
-//        Alert alerts = driver.switchTo().alert();
-//        alerts.sendKeys("hello");
-//        alerts.accept();
-//
-//        new Select(driver.findElement(By.id("ID"))).selectByVisibleText("HELLO");
-//
-
     }
 
     @Then("I should be directed to Checkout:Complete screen")
@@ -260,7 +232,6 @@ public class addToCartStepDef {
             Assert.fail("Unable to Complete Checkout");
         }
         screenshot("Checkout Complete");
-
     }
 
     public void screenshot(String fileName) throws IOException {
@@ -272,8 +243,6 @@ public class addToCartStepDef {
         File destFile=new File("target/screenshots/"+dateNow+"/"+fileName+getIterationCount()+".png");
 
         FileUtils.copyFile(sourceFile,destFile);
-
-
     }
 
     public static int getIterationCount() {
