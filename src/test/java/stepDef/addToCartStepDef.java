@@ -7,54 +7,67 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
+import org.codehaus.plexus.util.FileUtils;
 import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import io.github.bonigarcia.wdm.WebDriverManager;
+
 
 import java.io.File;
+import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 
 public class addToCartStepDef {
     WebDriver driver;
+    public LocalDateTime dateNow = LocalDateTime.now();
+    public static int iterationCount = 0;
 
-    @Before
-    public void setup(){
-        ChromeOptions options= new ChromeOptions();
-        String osName=System.getProperty("os.name").toLowerCase();
+    public void settingUp(){
 
-        if (osName.contains("windows")){
-            System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/windows/chromedriver.exe");
-            System.out.println("windows");
-        }else if (osName.contains("mac")){
-            System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/macOS/chromedriver");
-            System.out.println("mac");
-        } else if (osName.contains("linux")) {
-//             System.setProperty("webdriver.chrome.driver",System.getProperty("chromePath"));
-           System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/linux/chromedriver");
-            //options.setPlatformName("Linux");
-            System.out.println("Linux");
-        }
-
-        ChromeDriverService service= new ChromeDriverService.Builder()
+        System.setProperty("webdriver.chrome.driver","src/test/resources/drivers/macOS/chromedriver");
+        ChromeDriverService service = new ChromeDriverService.Builder()
                 .usingDriverExecutable(new File(System.getProperty("webdriver.chrome.driver")))
                 .usingAnyFreePort()
                 .build();
-        
-//         options.addArguments("--disable-blink-features");
-//         options.addArguments("--disable-blink-features=AutomationControlled");
-//         options.addArguments("--headless");
-//         options.addArguments("--disable-gpu");
-//         options.addArguments("--disable-extensions");
-//         options.addArguments("--incognito");
-//         options.addArguments("--disable-plugins-discovery");
+        ChromeOptions options = new ChromeOptions();
+//        options.addArguments("--headless");
+//        options.addArguments("--disable-gpu");
         options.addArguments("--remote-allow-origins=*");
-        driver = new ChromeDriver(service,options);
+        options.addArguments("--disable-plugin-discovery");
+
+        WebDriver drivers= new ChromeDriver(service,options);
+        drivers.get("endpoint");
+        drivers.manage().window().maximize();
+
+    }
+    @Before
+    public void setup(){
+        ChromeOptions options= new ChromeOptions();
+
+        WebDriverManager.chromedriver().setup();
+
+        options.addArguments("--headless");
+        options.addArguments("--incognito");
+        options.addArguments("--disable-gpu");
+        options.addArguments("--disable-plugins-discovery");
+        options.addArguments("--remote-allow-origins=*");
+         options.addArguments("--disable-plugins-discovery");
+        options.addArguments("--remote-allow-origins=*");
+        driver = new ChromeDriver(options);
         driver.get("https://www.saucedemo.com/");
         driver.manage().window().maximize();
+
+        //increment iteration count
+        setIteration(getIterationCount()+1);
 
     }
 
@@ -65,13 +78,14 @@ public class addToCartStepDef {
         driver.quit();
     }
     @Given("I've logged in using my credentials")
-    public void iVeLoggedInUsingMyCredentials() {
+    public void iVeLoggedInUsingMyCredentials() throws IOException {
 
         //Enter Username
         driver.findElement(By.id("user-name")).sendKeys("standard_user");
 
         //Enter Password
         driver.findElement(By.id("password")).sendKeys("secret_sauce");
+        screenshot("login");
 
         //Click Login button
         driver.findElement(By.id("login-button")).click();
@@ -95,6 +109,7 @@ public class addToCartStepDef {
         //verify if remove button is displayed
         if(!(driver.findElement(By.id("remove-sauce-labs-backpack")).isDisplayed())){
             Assert.fail("Remove Button for Backpack not Displayed");
+
         }
 
     }
@@ -199,15 +214,42 @@ public class addToCartStepDef {
     @When("I click Finish")
     public void iClickFinish() {
         driver.findElement(By.id("finish")).click();
-
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("finish")));
+        wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("finish"))));
+        new Select(driver.findElement(By.id("finish"))).selectByVisibleText("Hello");
+        Alert alert = driver.switchTo().alert();
+        alert.accept();
+        alert.dismiss();
+        alert.sendKeys("HEllo");
     }
 
     @Then("I should be directed to Checkout:Complete screen")
-    public void iShouldBeDirectedToCheckoutCompleteScreen() {
+    public void iShouldBeDirectedToCheckoutCompleteScreen() throws IOException {
         //verify checkout : Complete
         if(!(driver.findElement(By.xpath("//*[@id='header_container']/div[2]")).getText().contains("Checkout: Complete!"))){
             Assert.fail("Unable to Complete Checkout");
         }
+        screenshot("Checkout Complete");
+    }
 
+    public void screenshot(String fileName) throws IOException {
+
+        TakesScreenshot screenshot = ((TakesScreenshot) driver);
+
+        File sourceFile = screenshot.getScreenshotAs(OutputType.FILE);
+
+        File destFile=new File("target/screenshots/"+dateNow+"/"+fileName+getIterationCount()+".png");
+
+        FileUtils.copyFile(sourceFile,destFile);
+    }
+
+    public static int getIterationCount() {
+        return iterationCount;
+    }
+
+    public static void setIteration(int iterationCount) {
+        addToCartStepDef.iterationCount = iterationCount;
     }
 }
